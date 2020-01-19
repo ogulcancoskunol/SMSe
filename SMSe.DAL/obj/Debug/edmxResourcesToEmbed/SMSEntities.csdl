@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Group">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="start_date" Type="DateTime" Precision="0" />
+    <Property Name="end_date" Type="DateTime" Precision="0" />
+    <Property Name="capacity" Type="Int32" />
+    <Property Name="lab" Type="Int32" />
+    <Property Name="subject_teacher_id" Type="Int32" />
+    <NavigationProperty Name="Subject_Teacher" Relationship="Self.FK_Group_Subject_Teacher" FromRole="Group" ToRole="Subject_Teacher" />
+  </EntityType>
+  <EntityType Name="Subject">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="total_hour" Type="Double" />
+    <NavigationProperty Name="Subject_Teacher" Relationship="Self.FK_Subject_Teacher_Subject" FromRole="Subject" ToRole="Subject_Teacher" />
+  </EntityType>
+  <EntityType Name="Subject_Teacher">
+    <Key>
+      <PropertyRef Name="subject_teacher_id" />
+    </Key>
+    <Property Name="subject_teacher_id" Type="Int32" Nullable="false" />
+    <Property Name="teacher_id" Type="Int32" />
+    <Property Name="subject_id" Type="Int32" />
+    <NavigationProperty Name="Group" Relationship="Self.FK_Group_Subject_Teacher" FromRole="Subject_Teacher" ToRole="Group" />
+    <NavigationProperty Name="Subject" Relationship="Self.FK_Subject_Teacher_Subject" FromRole="Subject_Teacher" ToRole="Subject" />
+    <NavigationProperty Name="Teacher" Relationship="Self.FK_Subject_Teacher_Teacher" FromRole="Subject_Teacher" ToRole="Teacher" />
+  </EntityType>
+  <EntityType Name="Teacher">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="lname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Subject_Teacher" Relationship="Self.FK_Subject_Teacher_Teacher" FromRole="Teacher" ToRole="Subject_Teacher" />
+  </EntityType>
+  <Association Name="FK_Group_Subject_Teacher">
+    <End Role="Subject_Teacher" Type="Self.Subject_Teacher" Multiplicity="0..1" />
+    <End Role="Group" Type="Self.Group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Subject_Teacher">
+        <PropertyRef Name="subject_teacher_id" />
+      </Principal>
+      <Dependent Role="Group">
+        <PropertyRef Name="subject_teacher_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Subject_Teacher_Subject">
+    <End Role="Subject" Type="Self.Subject" Multiplicity="0..1" />
+    <End Role="Subject_Teacher" Type="Self.Subject_Teacher" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Subject">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Subject_Teacher">
+        <PropertyRef Name="subject_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Subject_Teacher_Teacher">
+    <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+    <End Role="Subject_Teacher" Type="Self.Subject_Teacher" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Teacher">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Subject_Teacher">
+        <PropertyRef Name="teacher_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SMSEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Group" EntityType="Self.Group" />
+    <EntitySet Name="Subject" EntityType="Self.Subject" />
+    <EntitySet Name="Subject_Teacher" EntityType="Self.Subject_Teacher" />
+    <EntitySet Name="Teacher" EntityType="Self.Teacher" />
+    <AssociationSet Name="FK_Group_Subject_Teacher" Association="Self.FK_Group_Subject_Teacher">
+      <End Role="Subject_Teacher" EntitySet="Subject_Teacher" />
+      <End Role="Group" EntitySet="Group" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Subject_Teacher_Subject" Association="Self.FK_Subject_Teacher_Subject">
+      <End Role="Subject" EntitySet="Subject" />
+      <End Role="Subject_Teacher" EntitySet="Subject_Teacher" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Subject_Teacher_Teacher" Association="Self.FK_Subject_Teacher_Teacher">
+      <End Role="Teacher" EntitySet="Teacher" />
+      <End Role="Subject_Teacher" EntitySet="Subject_Teacher" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

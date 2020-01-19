@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SMSModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="SMSModelStoreContainer">
+    <EntitySet Name="Group" EntityType="SMSModel.Store.Group" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Subject" EntityType="SMSModel.Store.Subject" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Subject_Teacher" EntityType="SMSModel.Store.Subject_Teacher" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Teacher" EntityType="SMSModel.Store.Teacher" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_Group_Subject_Teacher" Association="SMSModel.Store.FK_Group_Subject_Teacher">
+      <End Role="Subject_Teacher" EntitySet="Subject_Teacher" />
+      <End Role="Group" EntitySet="Group" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Subject_Teacher_Subject" Association="SMSModel.Store.FK_Subject_Teacher_Subject">
+      <End Role="Subject" EntitySet="Subject" />
+      <End Role="Subject_Teacher" EntitySet="Subject_Teacher" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Subject_Teacher_Teacher" Association="SMSModel.Store.FK_Subject_Teacher_Teacher">
+      <End Role="Teacher" EntitySet="Teacher" />
+      <End Role="Subject_Teacher" EntitySet="Subject_Teacher" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Group">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="start_date" Type="datetime" Nullable="true" />
+    <Property Name="end_date" Type="datetime" Nullable="true" />
+    <Property Name="capacity" Type="int" Nullable="true" />
+    <Property Name="lab" Type="int" Nullable="true" />
+    <Property Name="subject_teacher_id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Subject">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="total_hour" Type="float" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Subject_Teacher">
+    <Key>
+      <PropertyRef Name="subject_teacher_id" />
+    </Key>
+    <Property Name="subject_teacher_id" Type="int" Nullable="false" />
+    <Property Name="teacher_id" Type="int" Nullable="true" />
+    <Property Name="subject_id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Teacher">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fname" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="lname" Type="nvarchar" Nullable="true" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_Group_Subject_Teacher">
+    <End Role="Subject_Teacher" Type="SMSModel.Store.Subject_Teacher" Multiplicity="0..1" />
+    <End Role="Group" Type="SMSModel.Store.Group" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Subject_Teacher">
+        <PropertyRef Name="subject_teacher_id" />
+      </Principal>
+      <Dependent Role="Group">
+        <PropertyRef Name="subject_teacher_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Subject_Teacher_Subject">
+    <End Role="Subject" Type="SMSModel.Store.Subject" Multiplicity="0..1" />
+    <End Role="Subject_Teacher" Type="SMSModel.Store.Subject_Teacher" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Subject">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Subject_Teacher">
+        <PropertyRef Name="subject_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Subject_Teacher_Teacher">
+    <End Role="Teacher" Type="SMSModel.Store.Teacher" Multiplicity="0..1" />
+    <End Role="Subject_Teacher" Type="SMSModel.Store.Subject_Teacher" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Teacher">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Subject_Teacher">
+        <PropertyRef Name="teacher_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
